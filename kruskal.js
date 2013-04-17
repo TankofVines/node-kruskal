@@ -14,18 +14,6 @@ function kruskalMST(darray, callback) {
 		if (a[2] > b[2]) return 1;
 		return 0;
 	}
-	console.log(darray);
-	// Go through each row in the distance array
-	// If the index of the current distance is greate than the row index it is in
-	// add the edge to the edge array because it is on the right side of the diagonal
-	// async.eachSeries(darray, function(distances, cb){}, function(err){if(err){console.log(err)}});
-	// async.eachSeries(darray, function(distances, cb){
-
-	// }, function(err){
-	// 	if(err){
-	// 		console.log(err)
-	// 	}
-	// });
 
 	async.forEachSeries(darray, function(distances, cb) {
 		row += 1;
@@ -52,7 +40,6 @@ function kruskalMST(darray, callback) {
 	});
 
 	sortedEdgeArray = edgeArray.sort(compare);
-	console.log(sortedEdgeArray);
 
 	async.forEachSeries(sortedEdgeArray, function(edge, cb) {
 		edgeIndex += 1;
