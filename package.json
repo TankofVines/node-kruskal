@@ -3,15 +3,12 @@
   "version": "0.0.1",
   "description": "Given a distance array, computes the Minimum Spanning Tree using Kruskal's algorithm.",
   "main": "kruskal.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/kas673/node-kruskal.git"
   },
   "dependencies": {
-       "async": "2.x.x"
+    "async": "2.x.x"
   },
   "keywords": [
     "kruskal",
@@ -19,5 +16,5 @@
     "minimum spanning tree"
   ],
   "author": "Kevin Stofan",
-  "license": "BSD",
+  "license": "BSD"
 }
