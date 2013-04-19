@@ -3,10 +3,9 @@ var async = require('async');
 function kruskalMST(darray, callback) {
 	// Vars to hold the array of edges, final smt value, and the vertex tracker
 	var edgeArray = [],
-	smt = 0,
-	vertexArray = [],
-	row = -1,
-	edgeIndex = -1;
+		trees = []
+		smt = 0,
+		row = -1;
 
 	// Comparative function to sort the edges
 	function compare(a,b){
@@ -15,6 +14,7 @@ function kruskalMST(darray, callback) {
 		return 0;
 	}
 
+	// Get all of the edges from the distance array
 	async.forEachSeries(darray, function(distances, cb) {
 		row += 1;
 		column = -1;
@@ -22,7 +22,6 @@ function kruskalMST(darray, callback) {
 			column += 1;
 			if (column > row) {
 				edgeArray.push([row, column, distance]);
-				console.log(edgeArray);
 				c();
 			} else {
 				c();
@@ -39,40 +38,81 @@ function kruskalMST(darray, callback) {
 		}
 	});
 
+	// Sort the array of edges in ascending order
 	sortedEdgeArray = edgeArray.sort(compare);
 
+	// Iterate over the sorted array
 	async.forEachSeries(sortedEdgeArray, function(edge, cb) {
-		edgeIndex += 1;
-		if (edgeIndex == 0) {
+		if (sortedEdgeArray.indexOf(edge) == 0) {
+			trees.push([edge[0],edge[1]]);
 			smt += edge[2];
-			vertexArray.push(edge[0]);
-			vertexArray.push(edge[1]);
 			cb();
 		} else {
-			// If both vertices are in the tracker go to the next edge
-			if (vertexArray.indexOf(edge[0]) > -1 && vertexArray.indexOf(edge[1]) > -1) {
-				cb();
-			// If 0 index vertex is not in the tracker but the other is keep the edge but only add empty vertex
-			} else if (vertexArray.indexOf(edge[0]) == -1 && vertexArray.indexOf(edge[1]) > -1) {
+			async.forEachSeries(trees, function(tree, c) {
+				// Both vertices are already in the same tree
+				if (tree.indexOf(edge[0]) > -1 && tree.indexOf(edge[1]) > -1 ) {
+					cb();
+				// First vertex is in a tree but second one not
+				} else if (tree.indexOf(edge[0]) > -1 && tree.indexOf(edge[1]) == -1) {
+					// loop through the trees and see if edge[1] is in there
+					// If it is there, link the two 'trees'
+					// If not, 
+					async.forEachSeries(trees, function(otherTree, b) {
+						if (otherTree.indexOf(edge[1]) > -1) {
+							tree.push.apply(tree, otherTree);
+							trees.splice(trees.indexOf(otherTree),1);
+							smt += edge[2];
+							cb();
+						} else {
+							b();
+						}
+					}, function(err) {
+						if (err) {
+							console.log(err);
+						}
+						tree.push(edge[1]);
+						smt += edge[2];
+						cb();
+					});
+				} else if (tree.indexOf(edge[1]) > -1 && tree.indexOf(edge[0]) == -1) {
+					// loop through the trees and see if edge[1] is in there
+					// If it is there, link the two 'trees'
+					// If not, 
+					async.forEachSeries(trees, function(otherTree, b) {
+						if (otherTree.indexOf(edge[0]) > -1) {
+							tree.push.apply(tree, otherTree);
+							trees.splice(trees.indexOf(otherTree),1)
+							smt += edge[2];
+							cb();
+						} else {
+							b();
+						}
+					}, function(err) {
+						if (err) {
+							console.log(err);
+						}
+						tree.push(edge[0]);
+						smt += edge[2];
+						cb();
+					});
+				} else {
+					c();
+				}
+			}, function(err) {
+				if (err) {
+					console.log(err);
+				}
+				trees.push([edge[0],edge[1]]);
 				smt += edge[2];
-				vertexArray.push(edge[0]);
 				cb();
-			} else if (vertexArray.indexOf(edge[0]) > -1 && vertexArray.indexOf(edge[1]) == -1) {
-				smt += edge[2];
-				vertexArray.push(edge[1]);
-				cb();
-			} else if (vertexArray.indexOf(edge[0]) == -1 && vertexArray.indexOf(edge[1]) == -1) {
-				smt += edge[2];
-				vertexArray.push(edge[0]);
-				vertexArray.push(edge[1]);
-				cb();
-			}
+			});
 		}
 	}, function(err) {
 		if (err) {
 			console.log(err);
 		}
 	});
+
 	callback(smt);
 }
 
