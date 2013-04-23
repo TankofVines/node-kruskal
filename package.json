@@ -1,6 +1,6 @@
 {
   "name": "node-kruskal",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Given a distance array, computes the Minimum Spanning Tree using Kruskal's algorithm.",
   "main": "kruskal.js",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "https://github.com/kas673/node-kruskal.git"
   },
   "dependencies": {
-    "async": "2.x.x"
+    "async": "x.x.x"
   },
   "keywords": [
     "kruskal",
