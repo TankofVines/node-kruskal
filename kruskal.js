@@ -40,11 +40,13 @@ function kruskalMST(darray, callback) {
 
 	// Sort the array of edges in ascending order
 	sortedEdgeArray = edgeArray.sort(compare);
+	finalMSTArray = [];
 
 	// Iterate over the sorted array
 	async.forEachSeries(sortedEdgeArray, function(edge, cb) {
 		if (sortedEdgeArray.indexOf(edge) == 0) {
 			trees.push([edge[0],edge[1]]);
+			finalMSTArray.push(edge);
 			smt += edge[2];
 			cb();
 		} else {
@@ -61,6 +63,7 @@ function kruskalMST(darray, callback) {
 						if (otherTree.indexOf(edge[1]) > -1) {
 							tree.push.apply(tree, otherTree);
 							trees.splice(trees.indexOf(otherTree),1);
+							finalMSTArray.push(edge);
 							smt += edge[2];
 							cb();
 						} else {
@@ -71,6 +74,7 @@ function kruskalMST(darray, callback) {
 							console.log(err);
 						}
 						tree.push(edge[1]);
+						finalMSTArray.push(edge);
 						smt += edge[2];
 						cb();
 					});
@@ -82,6 +86,7 @@ function kruskalMST(darray, callback) {
 						if (otherTree.indexOf(edge[0]) > -1) {
 							tree.push.apply(tree, otherTree);
 							trees.splice(trees.indexOf(otherTree),1)
+							finalMSTArray.push(edge);
 							smt += edge[2];
 							cb();
 						} else {
@@ -92,6 +97,7 @@ function kruskalMST(darray, callback) {
 							console.log(err);
 						}
 						tree.push(edge[0]);
+						finalMSTArray.push(edge);
 						smt += edge[2];
 						cb();
 					});
@@ -103,6 +109,7 @@ function kruskalMST(darray, callback) {
 					console.log(err);
 				}
 				trees.push([edge[0],edge[1]]);
+				finalMSTArray.push(edge);
 				smt += edge[2];
 				cb();
 			});
@@ -113,7 +120,12 @@ function kruskalMST(darray, callback) {
 		}
 	});
 
-	callback(smt);
+	mstData = {
+				"mst": smt,
+				"mstArray": finalMSTArray
+				}
+
+	callback(mstData);
 }
 
 exports.kruskalMST = kruskalMST;

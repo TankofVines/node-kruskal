@@ -8,7 +8,9 @@ Given a distance array in the form of:
           [2,1,0,1],
           [3,2,1,0] ]
 
-calculates the Minimum Spanning Tree using Kruskal's algorithm.
+calculates the Minimum Spanning Tree (MST) using Kruskal's algorithm. Returns a JSON object containing the MST distance and an array of edges that make up the MST with each edge array containing:
+
+    [row, column, weight]
 
 Install:
 
@@ -26,4 +28,7 @@ Example:
 
 Output:
 
-    3
+    {
+      mst: 3,
+      mstArray: [[0,1,1],[1,2,1],[2,3,1]]
+    }
